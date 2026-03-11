@@ -21,7 +21,7 @@ class Equipamento(models.Model):
 
 class OrdemServico(models.Model):
 
-    Status_CHOICES = [
+    STATUS_CHOICES = [
         ('recebido', 'Recebido'),
         ('diagnostico', 'Diagnóstico'),
         ('aprovacao', 'Aguardando aprovação'),
