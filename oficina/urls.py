@@ -14,4 +14,8 @@ urlpatterns = [
     path('ordens/', views.ordens, name='ordens'),
     path('ordens/novo/', views.nova_ordem, name='nova_ordem'),
 
+    path('ordens/finalizar/<int:id>/', views.finalizar_ordem, name='finalizar_ordem'),
+
+    path('ordens/cancelar/<int:id>/', views.cancelar_ordem, name='cancelar_ordem'),
+
 ]

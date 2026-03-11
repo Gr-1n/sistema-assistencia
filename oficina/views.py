@@ -102,3 +102,23 @@ def nova_ordem(request):
         'clientes': clientes,
         'equipamentos': equipamentos
     })
+
+def finalizar_ordem(request, id):
+
+    ordem = OrdemServico.objects.get(id=id)
+
+    ordem.status = 'finalizado'
+
+    ordem.save()
+
+    return redirect('/ordens/')
+
+def cancelar_ordem(request, id):
+
+    ordem = OrdemServico.objects.get(id=id)
+
+    ordem.status = 'cancelado'
+
+    ordem.save()
+
+    return redirect('/ordens/')

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Ordens de Serviço</title>
 </head>
@@ -8,22 +9,65 @@
 
 <h1>Ordens de Serviço</h1>
 
-<a href="/ordens/novo/">
+<a href="/ordens/nova/">
 <button>Nova Ordem de Serviço</button>
 </a>
 
+<br><br>
+
+<table border="1">
+
+<tr>
+<th>ID</th>
+<th>Cliente</th>
+<th>Equipamento</th>
+<th>Problema</th>
+<th>Diagnóstico</th>
+<th>Valor</th>
+<th>Status</th>
+<th>Ações</th>
+</tr>
+
+{% for ordem in ordens %}
+
+<tr>
+
+<td>{{ ordem.id }}</td>
+
+<td>{{ ordem.cliente.nome }}</td>
+
+<td>{{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }}</td>
+
+<td>{{ ordem.problema }}</td>
+
+<td>{{ ordem.diagnostico }}</td>
+
+<td>R$ {{ ordem.valor }}</td>
+
+<td>{{ ordem.status }}</td>
+
+<td>
+
+<a href="/ordens/finalizar/{{ ordem.id }}/">
+<button>Finalizar</button>
+</a>
+
+<a href="/ordens/cancelar/{{ ordem.id }}/">
+<button>Cancelar</button>
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
 <a href="/">Voltar ao Dashboard</a>
 
-<ul>
-{% for ordem in ordens %}
-    <li>
-        OS #{{ ordem.id }} -
-        Cliente: {{ ordem.cliente.nome }} -
-        Equipamento: {{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }} -
-        Status: {{ ordem.status }}
-    </li>
-{% endfor %}
-</ul>
-
 </body>
+
 </html>
