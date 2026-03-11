@@ -1,0 +1,25 @@
+<form method="post">
+    
+    {% if form.errors %}
+    <div class="alert alert-danger">
+    Usuário ou senha inválidos
+    </div>
+    {% endif %}
+
+    {% csrf_token %}
+    
+    <div class="mb-3">
+        <label>Usuário</label>
+        <input type="text" name="username" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Senha</label>
+        <input type="password" name="password" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">
+        Entrar
+    </button>
+
+</form>

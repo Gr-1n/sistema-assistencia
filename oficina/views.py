@@ -1,21 +1,23 @@
 from django.shortcuts import render
 from .models import Cliente, Equipamento, OrdemServico
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def dashboard(request):
     return render(request, 'oficina/dashboard.html')
 
-
+@login_required
 def clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'oficina/clientes.html', {'clientes': clientes})
 
-
+@login_required
 def equipamentos(request):
     equipamentos = Equipamento.objects.all()
     return render(request, 'oficina/equipamentos.html', {'equipamentos': equipamentos})
 
-
+@login_required
 def ordens(request):
     ordens = OrdemServico.objects.all()
     return render(request, 'oficina/ordens.html', {'ordens': ordens})
@@ -23,7 +25,7 @@ def ordens(request):
 from django.shortcuts import render, redirect
 from .models import Cliente, Equipamento, OrdemServico
 
-
+@login_required
 def novo_cliente(request):
 
     if request.method == 'POST':
@@ -44,6 +46,7 @@ def novo_cliente(request):
 
     return render(request, 'oficina/novo_cliente.html')
 
+@login_required
 def novo_equipamento(request):
 
     clientes = Cliente.objects.all()
@@ -70,6 +73,7 @@ def novo_equipamento(request):
 
     return render(request, 'oficina/novo_equipamento.html', {'clientes': clientes})
 
+@login_required
 def nova_ordem(request):
 
     clientes = Cliente.objects.all()
@@ -103,6 +107,7 @@ def nova_ordem(request):
         'equipamentos': equipamentos
     })
 
+@login_required
 def finalizar_ordem(request, id):
 
     ordem = OrdemServico.objects.get(id=id)
@@ -113,6 +118,7 @@ def finalizar_ordem(request, id):
 
     return redirect('/ordens/')
 
+@login_required
 def cancelar_ordem(request, id):
 
     ordem = OrdemServico.objects.get(id=id)
