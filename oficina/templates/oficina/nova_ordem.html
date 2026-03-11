@@ -1,0 +1,65 @@
+<h1>Nova Ordem de Serviço</h1>
+
+<form method="POST">
+
+{% csrf_token %}
+
+Cliente:<br>
+<select name="cliente">
+{% for cliente in clientes %}
+<option value="{{ cliente.id }}">
+{{ cliente.nome }}
+</option>
+{% endfor %}
+</select>
+
+<br><br>
+
+Equipamento:<br>
+<select name="equipamento">
+{% for equipamento in equipamentos %}
+<option value="{{ equipamento.id }}">
+{{ equipamento.marca }} {{ equipamento.modelo }}
+</option>
+{% endfor %}
+</select>
+
+<br><br>
+
+Problema relatado:<br>
+<textarea name="problema"></textarea>
+
+<br><br>
+
+Diagnóstico:<br>
+<textarea name="diagnostico"></textarea>
+
+<br><br>
+
+Valor do serviço:<br>
+<input type="number" step="0.01" name="valor">
+
+<br><br>
+
+Status:<br>
+<select name="status">
+
+<option value="recebido">Recebido</option>
+<option value="diagnostico">Diagnóstico</option>
+<option value="aprovacao">Aguardando aprovação</option>
+<option value="reparo">Em reparo</option>
+<option value="finalizado">Finalizado</option>
+<option value="entregue">Entregue</option>
+<option value="cancelado">Cancelado</option>
+
+</select>
+
+<br><br>
+
+<button type="submit">Salvar</button>
+
+</form>
+
+<br>
+
+<a href="/ordens/">Voltar</a>

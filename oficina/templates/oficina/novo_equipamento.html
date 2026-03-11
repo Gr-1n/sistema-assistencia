@@ -1,0 +1,38 @@
+<h1>Cadastrar Equipamento</h1>
+
+<form method="POST">
+
+{% csrf_token %}
+
+Cliente:<br>
+<select name="cliente">
+
+{% for cliente in clientes %}
+<option value="{{ cliente.id }}">
+{{ cliente.nome }}
+</option>
+{% endfor %}
+
+</select>
+
+<br><br>
+
+Tipo:<br>
+<input type="text" name="tipo"><br><br>
+
+Marca:<br>
+<input type="text" name="marca"><br><br>
+
+Modelo:<br>
+<input type="text" name="modelo"><br><br>
+
+Número de Série:<br>
+<input type="text" name="numero_serie"><br><br>
+
+<button type="submit">Salvar</button>
+
+</form>
+
+<br>
+
+<a href="/equipamentos/">Voltar</a>

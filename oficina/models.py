@@ -37,7 +37,12 @@ class OrdemServico(models.Model):
     problema = models.TextField()
     diagnostico = models.TextField(blank=True)
 
-    valor = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    valor = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
 
     status = models.CharField(
         max_length=20,
