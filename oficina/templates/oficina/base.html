@@ -11,28 +11,54 @@
 
 </head>
 
-<body>
+<body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
 
 <div class="container">
 
-<a class="navbar-brand" href="/">Assistência Técnica</a>
+<a class="navbar-brand fw-bold" href="/">
+🛠 Assistência Técnica
+</a>
 
-<div class="navbar-nav">
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+<span class="navbar-toggler-icon"></span>
+</button>
 
+<div class="collapse navbar-collapse" id="menu">
+
+<ul class="navbar-nav me-auto">
+
+<li class="nav-item">
 <a class="nav-link" href="/clientes/">Clientes</a>
+</li>
 
+<li class="nav-item">
 <a class="nav-link" href="/equipamentos/">Equipamentos</a>
+</li>
 
+<li class="nav-item">
 <a class="nav-link" href="/ordens/">Ordens de Serviço</a>
+</li>
 
-<form action="/logout/" method="post" class="d-inline">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-link nav-link" style="display:inline; padding:0;">
-        Sair
-    </button>
+</ul>
+
+<div class="d-flex align-items-center text-white">
+
+<span class="me-3">
+
+Olá, {{ request.user.username }}
+
+</span>
+
+<form action="/logout/" method="post">
+{% csrf_token %}
+<button class="btn btn-outline-light btn-sm">
+Sair
+</button>
 </form>
+
+</div>
 
 </div>
 
@@ -42,11 +68,21 @@
 
 <div class="container mt-4">
 
+<div class="card shadow-sm">
+
+<div class="card-body">
+
 {% block content %}
 
 {% endblock %}
 
 </div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
