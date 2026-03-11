@@ -1,27 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Equipamentos</title>
-</head>
+{% extends 'oficina/base.html' %}
 
-<body>
+{% block content %}
 
-<h1>Lista de Equipamentos</h1>
+<h1>Equipamentos</h1>
 
-<a href="/equipamentos/novo/">
-<button>Novo Equipamento</button>
+<a href="/equipamentos/novo/" class="btn btn-success mb-3">
+
+Novo Equipamento
+
 </a>
 
-<a href="/">Voltar ao Dashboard</a>
+<table class="table table-striped">
 
-<ul>
+<tr>
+
+<th>Cliente</th>
+<th>Tipo</th>
+<th>Marca</th>
+<th>Modelo</th>
+<th>Número de Série</th>
+
+</tr>
+
 {% for equipamento in equipamentos %}
-    <li>
-        {{ equipamento.marca }} {{ equipamento.modelo }} 
-        - Cliente: {{ equipamento.cliente.nome }}
-    </li>
-{% endfor %}
-</ul>
 
-</body>
-</html>
+<tr>
+
+<td>{{ equipamento.cliente.nome }}</td>
+<td>{{ equipamento.tipo }}</td>
+<td>{{ equipamento.marca }}</td>
+<td>{{ equipamento.modelo }}</td>
+<td>{{ equipamento.numero_serie }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

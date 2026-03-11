@@ -1,21 +1,16 @@
-<!DOCTYPE html>
-<html>
+{% extends 'oficina/base.html' %}
 
-<head>
-    <title>Ordens de Serviço</title>
-</head>
-
-<body>
+{% block content %}
 
 <h1>Ordens de Serviço</h1>
 
-<a href="/ordens/nova/">
-<button>Nova Ordem de Serviço</button>
+<a href="/ordens/nova/" class="btn btn-success mb-3">
+Nova Ordem de Serviço
 </a>
 
-<br><br>
+<table class="table table-striped">
 
-<table border="1">
+<thead>
 
 <tr>
 <th>ID</th>
@@ -27,6 +22,10 @@
 <th>Status</th>
 <th>Ações</th>
 </tr>
+
+</thead>
+
+<tbody>
 
 {% for ordem in ordens %}
 
@@ -44,16 +43,28 @@
 
 <td>R$ {{ ordem.valor }}</td>
 
-<td>{{ ordem.status }}</td>
+<td>
+
+<span class="badge bg-primary">
+
+{{ ordem.status }}
+
+</span>
+
+</td>
 
 <td>
 
-<a href="/ordens/finalizar/{{ ordem.id }}/">
-<button>Finalizar</button>
+<a href="/ordens/finalizar/{{ ordem.id }}/" class="btn btn-success btn-sm">
+
+Finalizar
+
 </a>
 
-<a href="/ordens/cancelar/{{ ordem.id }}/">
-<button>Cancelar</button>
+<a href="/ordens/cancelar/{{ ordem.id }}/" class="btn btn-danger btn-sm">
+
+Cancelar
+
 </a>
 
 </td>
@@ -62,12 +73,8 @@
 
 {% endfor %}
 
+</tbody>
+
 </table>
 
-<br>
-
-<a href="/">Voltar ao Dashboard</a>
-
-</body>
-
-</html>
+{% endblock %}

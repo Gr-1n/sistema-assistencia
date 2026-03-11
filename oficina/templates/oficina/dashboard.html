@@ -1,18 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sistema Assistência Técnica</title>
-</head>
+{% extends 'oficina/base.html' %}
 
-<body>
+{% block content %}
 
-<h1>Sistema de Assistência Técnica</h1>
+<h1>Dashboard</h1>
 
-<ul>
-    <li><a href="/clientes/">Clientes</a></li>
-    <li><a href="/equipamentos/">Equipamentos</a></li>
-    <li><a href="/ordens/">Ordens de Serviço</a></li>
-</ul>
+<p>Bem-vindo ao sistema da assistência técnica.</p>
 
-</body>
-</html>
+<div class="row">
+
+<div class="col-md-4">
+
+<div class="card">
+
+<div class="card-body">
+
+<h5>Clientes</h5>
+
+<p>Gerenciar clientes cadastrados</p>
+
+<a href="/clientes/" class="btn btn-primary">Ver Clientes</a>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card">
+
+<div class="card-body">
+
+<h5>Equipamentos</h5>
+
+<p>Gerenciar equipamentos</p>
+
+<a href="/equipamentos/" class="btn btn-primary">Ver Equipamentos</a>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card">
+
+<div class="card-body">
+
+<h5>Ordens de Serviço</h5>
+
+<p>Gerenciar manutenções</p>
+
+<a href="/ordens/" class="btn btn-primary">Ver Ordens</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

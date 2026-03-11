@@ -1,26 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Clientes</title>
-</head>
+{% extends 'oficina/base.html' %}
 
-<body>
+{% block content %}
 
-<h1>Lista de Clientes</h1>
+<h1>Clientes</h1>
 
-<a href="/clientes/novo/">
-<button>Novo Cliente</button>
+<a href="/clientes/novo/" class="btn btn-success mb-3">
+
+Novo Cliente
+
 </a>
 
-<a href="/">Voltar ao Dashboard</a>
+<table class="table table-striped">
 
-<ul>
+<tr>
+
+<th>Nome</th>
+<th>Telefone</th>
+<th>Email</th>
+<th>Endereço</th>
+
+</tr>
+
 {% for cliente in clientes %}
-    <li>
-        {{ cliente.nome }} - {{ cliente.telefone }} - {{ cliente.email }}
-    </li>
-{% endfor %}
-</ul>
 
-</body>
-</html>
+<tr>
+
+<td>{{ cliente.nome }}</td>
+<td>{{ cliente.telefone }}</td>
+<td>{{ cliente.email }}</td>
+<td>{{ cliente.endereco }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}
