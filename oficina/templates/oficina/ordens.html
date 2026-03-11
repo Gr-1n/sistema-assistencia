@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ordens de Serviço</title>
+</head>
+
+<body>
+
+<h1>Ordens de Serviço</h1>
+
+<a href="/">Voltar ao Dashboard</a>
+
+<ul>
+{% for ordem in ordens %}
+    <li>
+        OS #{{ ordem.id }} -
+        Cliente: {{ ordem.cliente.nome }} -
+        Equipamento: {{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }} -
+        Status: {{ ordem.status }}
+    </li>
+{% endfor %}
+</ul>
+
+</body>
+</html>

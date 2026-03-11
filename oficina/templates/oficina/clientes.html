@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clientes</title>
+</head>
+
+<body>
+
+<h1>Lista de Clientes</h1>
+
+<a href="/">Voltar ao Dashboard</a>
+
+<ul>
+{% for cliente in clientes %}
+    <li>
+        {{ cliente.nome }} - {{ cliente.telefone }} - {{ cliente.email }}
+    </li>
+{% endfor %}
+</ul>
+
+</body>
+</html>

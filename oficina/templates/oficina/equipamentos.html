@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Equipamentos</title>
+</head>
+
+<body>
+
+<h1>Lista de Equipamentos</h1>
+
+<a href="/">Voltar ao Dashboard</a>
+
+<ul>
+{% for equipamento in equipamentos %}
+    <li>
+        {{ equipamento.marca }} {{ equipamento.modelo }} 
+        - Cliente: {{ equipamento.cliente.nome }}
+    </li>
+{% endfor %}
+</ul>
+
+</body>
+</html>
