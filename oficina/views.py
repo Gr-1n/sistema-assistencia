@@ -1,11 +1,24 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Cliente, Equipamento, OrdemServico
 from django.contrib.auth.decorators import login_required
 
 
 @login_required
 def dashboard(request):
-    return render(request, 'oficina/dashboard.html')
+
+    total_os = OrdemServico.objects.count()
+    total_clientes = Cliente.objects.count()
+    abertas = OrdemServico.objects.filter(status="aberto").count()
+    prontas = OrdemServico.objects.filter(status="pronto").count()
+
+    context = {
+        "total_os": total_os,
+        "total_clientes": total_clientes,
+        "abertas": abertas,
+        "prontas": prontas
+    }
+
+    return render(request, 'oficina/dashboard.html', context)
 
 @login_required
 def clientes(request):
@@ -13,9 +26,65 @@ def clientes(request):
     return render(request, 'oficina/clientes.html', {'clientes': clientes})
 
 @login_required
+def editar_cliente(request, id):
+
+    cliente = get_object_or_404(Cliente, id=id)
+
+    if request.method == "POST":
+        cliente.nome = request.POST.get("nome")
+        cliente.telefone = request.POST.get("telefone")
+        cliente.email = request.POST.get("email")
+        cliente.endereco = request.POST.get("endereco")
+        cliente.save()
+
+        return redirect("clientes")
+
+    return render(request, "oficina/editar_cliente.html", {"cliente": cliente})
+
+@login_required
+def excluir_cliente(request, id):
+
+    cliente = get_object_or_404(Cliente, id=id)
+    cliente.delete()
+
+    return redirect("clientes")
+
+@login_required
 def equipamentos(request):
     equipamentos = Equipamento.objects.all()
     return render(request, 'oficina/equipamentos.html', {'equipamentos': equipamentos})
+
+@login_required
+def editar_equipamento(request, id):
+
+    equipamento = get_object_or_404(Equipamento, id=id)
+
+    if request.method == "POST":
+
+        equipamento.cliente_id = request.POST.get("cliente")
+        equipamento.tipo = request.POST.get("tipo")
+        equipamento.marca = request.POST.get("marca")
+        equipamento.modelo = request.POST.get("modelo")
+        equipamento.numero_serie = request.POST.get("numero_serie")
+
+        equipamento.save()
+
+        return redirect("equipamentos")
+
+    clientes = Cliente.objects.all()
+
+    return render(request, "oficina/editar_equipamento.html", {
+        "equipamento": equipamento,
+        "clientes": clientes
+    })
+
+@login_required
+def excluir_equipamento(request, id):
+
+    equipamento = get_object_or_404(Equipamento, id=id)
+    equipamento.delete()
+
+    return redirect("equipamentos")
 
 @login_required
 def ordens(request):

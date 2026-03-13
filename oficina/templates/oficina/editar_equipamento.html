@@ -1,12 +1,8 @@
 {% extends "oficina/base.html" %}
 
-{% block title %}
-Novo Equipamento
-{% endblock %}
-
 {% block content %}
 
-<h2 class="mb-4">Cadastrar Equipamento</h2>
+<h2 class="mb-4">Editar Equipamento</h2>
 
 <form method="POST" class="card p-4 shadow-sm">
 
@@ -18,9 +14,12 @@ Novo Equipamento
 <select name="cliente" class="form-select">
 
 {% for cliente in clientes %}
-<option value="{{ cliente.id }}">
+
+<option value="{{ cliente.id }}"
+{% if cliente.id == equipamento.cliente.id %}selected{% endif %}>
 {{ cliente.nome }}
 </option>
+
 {% endfor %}
 
 </select>
@@ -29,31 +28,31 @@ Novo Equipamento
 
 <div class="mb-3">
 <label class="form-label">Tipo</label>
-<input type="text" name="tipo" class="form-control">
+<input type="text" name="tipo" value="{{ equipamento.tipo }}" class="form-control">
 </div>
 
 <div class="mb-3">
 <label class="form-label">Marca</label>
-<input type="text" name="marca" class="form-control">
+<input type="text" name="marca" value="{{ equipamento.marca }}" class="form-control">
 </div>
 
 <div class="mb-3">
 <label class="form-label">Modelo</label>
-<input type="text" name="modelo" class="form-control">
+<input type="text" name="modelo" value="{{ equipamento.modelo }}" class="form-control">
 </div>
 
 <div class="mb-3">
 <label class="form-label">Número de Série</label>
-<input type="text" name="numero_serie" class="form-control">
+<input type="text" name="numero_serie" value="{{ equipamento.numero_serie }}" class="form-control">
 </div>
 
 <div class="mt-3">
 
 <button type="submit" class="btn btn-success">
-Salvar
+Salvar Equipamento
 </button>
 
-<a href="/equipamentos/" class="btn btn-secondary ms-2">
+<a href="/clientes/" class="btn btn-secondary ms-2">
 Voltar
 </a>
 

@@ -4,3 +4,8 @@ db.sqlite3
 .venv/
 venv/
 .vscode/
+.env
+.DS_Store
+Thumbs.db
+*.log
+media/
