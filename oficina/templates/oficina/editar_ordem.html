@@ -1,0 +1,50 @@
+{% extends "oficina/base.html" %}
+
+{% block content %}
+
+<h2>Editar Ordem de Serviço</h2>
+
+<form method="post">
+
+{% csrf_token %}
+
+<label>Cliente</label>
+<select name="cliente" class="form-control">
+{% for cliente in clientes %}
+<option value="{{ cliente.id }}" {% if cliente.id == ordem.cliente.id %}selected{% endif %}>
+{{ cliente.nome }}
+</option>
+{% endfor %}
+</select>
+
+<label>Equipamento</label>
+<select name="equipamento" class="form-control">
+{% for equipamento in equipamentos %}
+<option value="{{ equipamento.id }}" {% if equipamento.id == ordem.equipamento.id %}selected{% endif %}>
+{{ equipamento.marca }} {{ equipamento.modelo }}
+</option>
+{% endfor %}
+</select>
+
+<label>Problema</label>
+<textarea name="problema" class="form-control">{{ ordem.problema }}</textarea>
+
+<label>Diagnóstico</label>
+<textarea name="diagnostico" class="form-control">{{ ordem.diagnostico }}</textarea>
+
+<label>Valor</label>
+<input type="text" name="valor" class="form-control" value="{{ ordem.valor }}">
+
+<br>
+
+<button type="submit" class="btn btn-success">
+Salvar
+</button>
+
+<a href="/ordens/" class="btn btn-secondary">
+Voltar
+</a>
+
+</form>
+
+{% endblock %}

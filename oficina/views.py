@@ -8,14 +8,21 @@ def dashboard(request):
 
     total_os = OrdemServico.objects.count()
     total_clientes = Cliente.objects.count()
-    abertas = OrdemServico.objects.filter(status="aberto").count()
-    prontas = OrdemServico.objects.filter(status="pronto").count()
+
+    recebidos = OrdemServico.objects.filter(status="recebido").count()
+    diagnostico = OrdemServico.objects.filter(status="diagnostico").count()
+    aprovacao = OrdemServico.objects.filter(status="aprovacao").count()
+    reparo = OrdemServico.objects.filter(status="reparo").count()
+    finalizados = OrdemServico.objects.filter(status="finalizado").count()
 
     context = {
         "total_os": total_os,
         "total_clientes": total_clientes,
-        "abertas": abertas,
-        "prontas": prontas
+        "recebidos": recebidos,
+        "diagnostico": diagnostico,
+        "aprovacao": aprovacao,
+        "reparo": reparo,
+        "finalizados": finalizados
     }
 
     return render(request, 'oficina/dashboard.html', context)
@@ -90,6 +97,41 @@ def excluir_equipamento(request, id):
 def ordens(request):
     ordens = OrdemServico.objects.all()
     return render(request, 'oficina/ordens.html', {'ordens': ordens})
+
+@login_required
+def editar_ordem(request, id):
+
+    ordem = get_object_or_404(OrdemServico, id=id)
+
+    clientes = Cliente.objects.all()
+    equipamentos = Equipamento.objects.all()
+
+    if request.method == "POST":
+
+        ordem.cliente_id = request.POST.get("cliente")
+        ordem.equipamento_id = request.POST.get("equipamento")
+        ordem.problema = request.POST.get("problema")
+        ordem.diagnostico = request.POST.get("diagnostico")
+        ordem.valor = request.POST.get("valor")
+        ordem.status = request.POST.get("status")
+
+        ordem.save()
+
+        return redirect("/ordens/")
+
+    return render(request, "oficina/editar_ordem.html", {
+        "ordem": ordem,
+        "clientes": clientes,
+        "equipamentos": equipamentos
+    })
+
+@login_required
+def alterar_status(request, id, status):
+    ordem = get_object_or_404(OrdemServico, id=id)
+    ordem.status = status
+    ordem.save()
+
+    return redirect('ordens')
 
 from django.shortcuts import render, redirect
 from .models import Cliente, Equipamento, OrdemServico
@@ -197,3 +239,95 @@ def cancelar_ordem(request, id):
     ordem.save()
 
     return redirect('/ordens/')
+
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from django.http import HttpResponse
+from .models import OrdemServico
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet
+
+from django.conf import settings
+import os
+
+@login_required
+def pdf_ordem(request, id):
+
+    ordem = OrdemServico.objects.get(id=id)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="ordem_{ordem.id}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+
+    largura, altura = A4
+
+    # TÍTULO
+    p.setFont("Helvetica-Bold", 20)
+    p.drawCentredString(largura/2, altura - 3*cm, "ORDEM DE SERVIÇO")
+
+    # DADOS DA EMPRESA
+    p.setFont("Helvetica", 11)
+    p.drawCentredString(largura/2, altura - 4*cm, "Assistência Técnica")
+    p.drawCentredString(largura/2, altura - 4.6*cm, "Telefone: (00) 0000-0000")
+
+    # LINHA
+    p.line(2*cm, altura - 5.5*cm, largura - 2*cm, altura - 5.5*cm)
+
+    y = altura - 7*cm
+
+    # NÚMERO DA ORDEM
+    p.setFont("Helvetica-Bold", 13)
+    p.drawString(3*cm, y, f"Ordem Nº: {ordem.id}")
+
+    y -= 1.5*cm
+
+    # TABELA DE DADOS
+    dados = [
+        ["Cliente", ordem.cliente],
+        ["Equipamento", str(ordem.equipamento)],
+        ["Problema", ordem.problema],
+        ["Diagnóstico", ordem.diagnostico],
+        ["Status", ordem.status],
+    ]
+
+    largura_label = 5*cm
+    largura_valor = 11*cm
+
+    for label, valor in dados:
+
+        p.setFont("Helvetica-Bold", 11)
+        p.drawString(3*cm, y, label + ":")
+
+        p.setFont("Helvetica", 11)
+        p.drawString(8*cm, y, str(valor))
+
+        y -= 1*cm
+
+    # VALOR
+    y -= 0.5*cm
+
+    p.setFont("Helvetica-Bold", 14)
+    p.setFillColor(colors.darkgreen)
+    p.drawString(3*cm, y, f"Valor do Serviço: R$ {ordem.valor}")
+    p.setFillColor(colors.black)
+
+    # ASSINATURAS
+    y -= 3*cm
+
+    p.line(3*cm, y, 9*cm, y)
+    p.drawCentredString(6*cm, y - 0.6*cm, "Assinatura do Cliente")
+
+    p.line(11*cm, y, 17*cm, y)
+    p.drawCentredString(14*cm, y - 0.6*cm, "Responsável Técnico")
+
+    # RODAPÉ
+    p.setFont("Helvetica", 9)
+    p.drawCentredString(largura/2, 2*cm, "Documento gerado pelo Sistema de Assistência Técnica")
+
+    p.showPage()
+    p.save()
+
+    return response

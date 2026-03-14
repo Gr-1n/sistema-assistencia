@@ -8,10 +8,45 @@
 
 <h1>Painel do Sistema</h1>
 
-<p>Total de clientes: {{ total_clientes }}</p>
-<p>Total de ordens: {{ total_os }}</p>
-<p>Ordens abertas: {{ abertas }}</p>
-<p>Ordens prontas: {{ prontas }}</p>
+<div class="row mb-4">
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Total Clientes</h5>
+<h2>{{ total_clientes }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Total Ordens</h5>
+<h2>{{ total_os }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Diagnóstico</h5>
+<h2>{{ diagnostico }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Em Reparo</h5>
+<h2>{{ reparo }}</h2>
+</div>
+</div>
+</div>
+
+</div>
 
 <div class="row">
 

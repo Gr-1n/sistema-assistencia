@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style>
+
+body{
+font-family: Arial;
+}
+
+h1{
+text-align:center;
+}
+
+.container{
+margin:40px;
+}
+
+.box{
+border:1px solid #000;
+padding:10px;
+margin-bottom:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>ORDEM DE SERVIÇO</h1>
+
+<div class="container">
+
+<div class="box">
+<strong>Ordem:</strong> {{ ordem.id }}
+</div>
+
+<div class="box">
+<strong>Cliente:</strong> {{ ordem.cliente.nome }} <br>
+<strong>Telefone:</strong> {{ ordem.cliente.telefone }}
+</div>
+
+<div class="box">
+<strong>Equipamento:</strong>
+{{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }}
+</div>
+
+<div class="box">
+<strong>Problema:</strong><br>
+{{ ordem.problema }}
+</div>
+
+<div class="box">
+<strong>Diagnóstico:</strong><br>
+{{ ordem.diagnostico }}
+</div>
+
+<div class="box">
+<strong>Valor:</strong> R$ {{ ordem.valor }}
+</div>
+
+<div class="box">
+<strong>Status:</strong> {{ ordem.status }}
+</div>
+
+<br><br>
+
+Assinatura do Cliente: ___________________________
+
+</div>
+
+</body>
+
+</html>

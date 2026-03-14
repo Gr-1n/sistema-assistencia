@@ -24,10 +24,9 @@ class OrdemServico(models.Model):
     STATUS_CHOICES = [
         ('recebido', 'Recebido'),
         ('diagnostico', 'Diagnóstico'),
-        ('aprovacao', 'Aguardando aprovação'),
-        ('reparo', 'Em reparo'),
+        ('aprovacao', 'Aguardando Aprovação'),
+        ('reparo', 'Em Reparo'),
         ('finalizado', 'Finalizado'),
-        ('entregue', 'Entregue'),
         ('cancelado', 'Cancelado'),
     ]
 
@@ -35,14 +34,13 @@ class OrdemServico(models.Model):
     equipamento = models.ForeignKey(Equipamento, on_delete=models.CASCADE)
 
     problema = models.TextField()
-    diagnostico = models.TextField(blank=True)
+    diagnostico = models.TextField(blank=True, null=True)
 
-    valor = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        null=True,
-        blank=True
-    )
+    observacoes = models.TextField(blank=True, null=True)
+
+    valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    garantia = models.CharField(max_length=100, blank=True, null=True)
 
     status = models.CharField(
         max_length=20,
@@ -51,6 +49,10 @@ class OrdemServico(models.Model):
     )
 
     data_entrada = models.DateTimeField(auto_now_add=True)
+    data_saida = models.DateTimeField(blank=True, null=True)
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"OS #{self.id} - {self.cliente}"
