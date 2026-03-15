@@ -29,4 +29,6 @@ urlpatterns = [
 
     path("ordens/pdf/<int:id>/", views.pdf_ordem, name="pdf_ordem"),
 
+    path('ordens/atualizar-status/<int:id>/', views.atualizar_status, name='atualizar_status'),
+
 ]

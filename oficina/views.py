@@ -347,3 +347,18 @@ def pdf_ordem(request, id):
     p.save()
 
     return response
+
+from django.http import JsonResponse
+
+@login_required
+def atualizar_status(request, id):
+
+    if request.method == "POST":
+
+        ordem = OrdemServico.objects.get(id=id)
+        novo_status = request.POST.get("status")
+
+        ordem.status = novo_status
+        ordem.save()
+
+        return JsonResponse({"success": True})
