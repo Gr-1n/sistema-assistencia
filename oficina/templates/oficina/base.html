@@ -50,6 +50,21 @@
 
         /* Ajuste para as opções não sumirem no branco */
         .status-select-custom option { color: #333 !important; background-color: white !important; }
+
+        /* Centraliza TODO o conteúdo das células da tabela verticalmente */
+        .table td, .table th {
+            vertical-align: middle !important;
+            padding: 12px 8px !important; /* Aumenta um pouco o respiro interno */
+        }
+
+        /* Ajuste fino no select para ele não ser gigante */
+        .status-select-custom {
+            height: 32px !important; /* Define uma altura fixa padrão */
+            line-height: 1 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            font-size: 0.75rem !important; /* Diminui levemente a fonte para caber melhor */
+        }
     </style>
 </head>
 

@@ -8,43 +8,61 @@
 
 <h1>Painel do Sistema</h1>
 
-<div class="row mb-4">
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-6 g-3 mb-4">
+    
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 border-top border-primary border-4">
+            <div class="card-body text-center">
+                <small class="text-muted fw-bold">CLIENTES</small>
+                <h3 class="fw-bold mb-0">{{ total_clientes }}</h3>
+            </div>
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Total Clientes</h5>
-<h2>{{ total_clientes }}</h2>
-</div>
-</div>
-</div>
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 border-top border-warning border-4">
+            <div class="card-body text-center">
+                <small class="text-muted fw-bold">RECEBIDOS</small>
+                <h3 class="fw-bold mb-0 text-warning">{{ recebidos }}</h3>
+            </div>
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Total Ordens</h5>
-<h2>{{ total_os }}</h2>
-</div>
-</div>
-</div>
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 border-top border-info border-4">
+            <div class="card-body text-center">
+                <small class="text-muted fw-bold">DIAGNÓSTICO</small>
+                <h3 class="fw-bold mb-0 text-info">{{ diagnostico }}</h3>
+            </div>
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Diagnóstico</h5>
-<h2>{{ diagnostico }}</h2>
-</div>
-</div>
-</div>
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 border-top border-primary border-4">
+            <div class="card-body text-center">
+                <small class="text-muted fw-bold">APROVAÇÃO</small>
+                <h3 class="fw-bold mb-0 text-primary">{{ aprovacao }}</h3>
+            </div>
+        </div>
+    </div>
 
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Em Reparo</h5>
-<h2>{{ reparo }}</h2>
-</div>
-</div>
-</div>
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 border-top border-success border-4">
+            <div class="card-body text-center">
+                <small class="text-muted fw-bold">EM REPARO</small>
+                <h3 class="fw-bold mb-0 text-success">{{ reparo }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 border-top border-dark border-4">
+            <div class="card-body text-center">
+                <small class="text-muted fw-bold">FINALIZADOS</small>
+                <h3 class="fw-bold mb-0 text-dark">{{ finalizados }}</h3>
+            </div>
+        </div>
+    </div>
 
 </div>
 
