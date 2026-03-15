@@ -1,113 +1,399 @@
-DOCUMENTAÇÃO DO SISTEMA DE ASSISTÊNCIA TÉCNICA
+# 📚 Documentação Técnica
+## Sistema de Assistência Técnica
 
-Este documento detalha a arquitetura, funcionalidades e configurações técnicas do software de gestão de Assistência Técnica desenvolvido em Django.
+Esta documentação descreve a arquitetura, funcionamento e componentes do sistema **Sistema de Assistência Técnica**, desenvolvido em **Python utilizando o framework Django**.
 
-    1. Visão Geral do Projeto
+O sistema permite gerenciar clientes, equipamentos e ordens de serviço de uma assistência técnica, além de gerar documentos em PDF e acompanhar o status das manutenções.
 
-        O sistema tem como objetivo centralizar o fluxo de trabalho de uma oficina, permitindo o registro de clientes, o controle de seus equipamentos e o acompanhamento de Ordens de Serviço (O.S.) desde a abertura até a finalização ou cancelamento.
+---
 
-    2. Arquitetura e Tecnologias
+# 📌 1. Visão Geral do Sistema
 
-        O software utiliza o padrão de projeto MVT (Model-Template-View).
+O sistema foi desenvolvido para auxiliar empresas ou técnicos que realizam manutenção de equipamentos eletrônicos ou informáticos.
 
-        Linguagem: Python 3.13
+Ele permite:
 
-        Framework Web: Django 6.0
+- Cadastro de clientes
+- Registro de equipamentos
+- Controle de ordens de serviço
+- Atualização de status da manutenção
+- Geração de ordem de serviço em PDF
+- Dashboard com indicadores do sistema
 
-        Interface: Bootstrap 5 (CSS/JS via CDN)
+O sistema possui autenticação de usuários, garantindo que apenas pessoas autorizadas possam acessar e modificar as informações.
 
-        Banco de Dados: SQLite3 (Embutido)
+---
 
-        Ambiente Virtual: venv (Ambiente Isolado)
+# 🏗 2. Arquitetura do Projeto
 
-    3. Estrutura de Modelagem (Banco de Dados)
+O projeto segue a arquitetura padrão do framework **Django**, baseada no padrão **MVT (Model – View – Template)**.
 
-    3.1. Clientes
+### Model
+Responsável pela estrutura dos dados e comunicação com o banco de dados.
 
-        Armazena as informações de contato do proprietário.
+### View
+Responsável pela lógica de negócio do sistema.
 
-        Campos: Nome, Telefone, E-mail, Endereço.
+### Template
+Responsável pela interface visual do sistema.
 
-    3.2. Equipamentos
+---
 
-        Registra os dispositivos vinculados a um cliente (Relacionamento 1:N).
+# 📂 3. Estrutura do Projeto
 
-        Campos: Cliente (FK), Tipo, Marca, Modelo, Número de Série.
 
-    3.3. Ordens de Serviço
+sistema-assistencia
+│
+├── assistencia_tecnica
+│ ├── init.py
+│ ├── asgi.py
+│ ├── settings.py
+│ ├── urls.py
+│ └── wsgi.py
+│
+├── oficina
+│ ├── migrations
+│ ├── templates
+│ │ └── oficina
+│ │ ├── dashboard.html
+│ │ ├── clientes.html
+│ │ ├── equipamentos.html
+│ │ ├── ordens.html
+│ │ ├── novo_cliente.html
+│ │ ├── novo_equipamento.html
+│ │ └── nova_ordem.html
+│ │
+│ ├── admin.py
+│ ├── apps.py
+│ ├── models.py
+│ ├── views.py
+│ ├── urls.py
+│ └── tests.py
+│
+├── static
+│
+├── manage.py
+└── requirements.txt
 
-        Controla o processo de manutenção (Relacionamento 1:N com Equipamento).
 
-        Campos: Cliente, Equipamento, Descrição do Problema, Diagnóstico Técnico, Valor, Status (Pendente, Finalizado, Cancelado).
+---
 
-    4. Funcionalidades Detalhadas
+# 🧱 4. Modelagem de Dados
 
-    4.1. Controle de Acesso
+O sistema possui três modelos principais:
 
-        Todas as páginas internas estão protegidas pelo decorador @login_required. O sistema redireciona automaticamente usuários não autenticados para a tela de login.
+- Cliente
+- Equipamento
+- OrdemServico
 
-    4.2. Tela de Login Customizada
+---
 
-        O formulário de login foi modificado em forms.py para:
+### 👤 4.1 Modelo Cliente
 
-        Incluir classes de estilização do Bootstrap.
+Representa os clientes da assistência técnica.
 
-        Preencher automaticamente os campos de Usuário e Senha com o valor adm para facilitar o acesso em ambiente de desenvolvimento.
+### Campos
 
-        Alinhamento horizontal de campos usando o sistema de Grid do Bootstrap.
+| Campo | Tipo | Descrição |
+|------|------|-----------|
+| nome | CharField | Nome do cliente |
+| telefone | CharField | Telefone para contato |
+| email | EmailField | Email do cliente |
+| endereco | CharField | Endereço do cliente |
 
-    4.3. Gestão de Fluxo
+### Exemplo de modelo
 
-        Criação: Formulários otimizados para captura de dados.
+```python
+class Cliente(models.Model):
+    nome = models.CharField(max_length=100)
+    telefone = models.CharField(max_length=20)
+    email = models.EmailField()
+    endereco = models.CharField(max_length=200)
+```
 
-        Finalização/Cancelamento: Funções rápidas na views.py que alteram o status do registro no banco de dados através de ordem.save().
+### 💻 4.2 Modelo Equipamento
 
-    5. Estrutura de Rotas (URLs)
-    
-        O mapeamento de URLs do sistema conecta as requisições do navegador às funções de lógica (Views). Abaixo estão os principais endereços configurados:
+Representa os equipamentos cadastrados no sistema.
 
-    Autenticação e Acesso
+Cada equipamento pertence a um cliente.
 
-        /login/: Utiliza a LoginView nativa do Django com formulário customizado para realizar a autenticação do usuário.
+### Campos
 
-        /logout/: Encerra a sessão atual e redireciona o usuário para a tela de login.
+| Campo | Tipo | Descrição |
+|------|------|-----------|
+| cliente |	ForeignKey | Cliente dono do equipamento
+| tipo | CharField | Tipo do equipamento
+| marca | CharField | Marca
+| modelo | CharField | Modelo
+| numero_serie | CharField | Número de série
 
-    Painel e Gestão
+### Exemplo
 
-        /: Rota principal que aciona a view dashboard, apresentando o resumo das atividades da oficina.
+```python
+class Equipamento(models.Model):
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=100)
+    marca = models.CharField(max_length=100)
+    modelo = models.CharField(max_length=100)
+    numero_serie = models.CharField(max_length=100)
+```
 
-        /clientes/: Aciona a view clientes, responsável por listar todos os proprietários cadastrados no banco de dados.
+### 🧾 4.3 Modelo Ordem de Serviço
 
-        /clientes/novo/: Rota para o formulário de cadastro de novos clientes via método POST.
+Representa o registro de manutenção de um equipamento.
 
-        /equipamentos/: Exibe a lista de todos os aparelhos e dispositivos registrados.
+### Campos
 
-    Operações de Ordem de Serviço
+| Campo | Tipo | Descrição |
+|------|------|-----------|
+| cliente |	ForeignKey | Cliente responsável
+| equipamento |	ForeignKey | Equipamento em manutenção
+| problema | TextField | Problema informado
+| diagnostico |	TextField |	Diagnóstico técnico
+| valor | DecimalField | Valor do serviço
+| status | CharField | Status da ordem
 
-        /ordens/: Central de controle que lista todas as O.S. (Ordens de Serviço).
+# 🔄 5. Fluxo de Status das Ordens
 
-        /finalizar/<id>/: Rota dinâmica que recebe o ID da ordem e altera seu status para "Finalizado".
+As ordens de serviço possuem um fluxo de status:
 
-        /cancelar/<id>/: Rota dinâmica que recebe o ID da ordem e altera seu status para "Cancelado".
+Recebido
 
-    6. Configurações de Desenvolvimento
+↓
 
-        Ativação do Ambiente (Windows)
+Diagnóstico
 
-        PowerShell
+↓
 
-        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Aguardando aprovação
 
-        .\venv\Scripts\activate
+↓
 
-    Comandos de Manutenção
+Reparo
 
-        Migrações: python manage.py makemigrations e python manage.py migrate
+↓
 
-        Execução: python manage.py runserver
+Finalizado
 
-        Novo Admin: python manage.py createsuperuser
+Também existe o status:
 
-    7. Notas de Estilização
+Cancelado
 
-        A interface utiliza o arquivo base.html como template pai, garantindo que o cabeçalho, navegação e rodapé sejam consistentes em todas as páginas do sistema.
+# 📊 6. Dashboard
+
+O dashboard apresenta indicadores importantes do sistema.
+
+São exibidas informações como:
+
+- Total de clientes
+
+- Total de ordens de serviço
+
+- Quantidade de ordens por status
+
+Essas informações são obtidas através de consultas no banco de dados utilizando o ORM do Django.
+
+Exemplo:
+
+```python
+total_os = OrdemServico.objects.count()
+recebidos = OrdemServico.objects.filter(status="recebido").count()
+```
+
+# 👥 7. Gestão de Clientes
+
+O sistema permite:
+
+- Cadastrar novos clientes
+
+- Listar clientes cadastrados
+
+- Editar informações
+
+- Excluir clientes
+
+Essas operações são realizadas através das views:
+
+- novo_cliente
+
+- clientes
+
+- editar_cliente
+
+- excluir_cliente
+
+# 🖥 8. Gestão de Equipamentos
+
+Cada cliente pode possuir vários equipamentos cadastrados.
+
+Funcionalidades disponíveis:
+
+- Cadastro de equipamento
+
+- Listagem
+
+- Edição
+
+- Exclusão
+
+# 🧾 9. Gestão de Ordens de Serviço
+
+Permite registrar manutenções realizadas em equipamentos.
+
+As ordens registram:
+
+- Cliente
+
+- Equipamento
+
+- Problema relatado
+
+- Diagnóstico
+
+- Valor do serviço
+
+- Status
+
+Também é possível:
+
+- Finalizar ordem
+
+- Cancelar ordem
+
+# 📄 10. Geração de PDF
+
+O sistema gera um documento PDF da ordem de serviço utilizando a biblioteca ReportLab.
+
+O PDF contém:
+
+- Número da ordem
+
+- Dados do cliente
+
+- Dados do equipamento
+
+- Problema relatado
+
+- Diagnóstico
+
+- Valor do serviço
+
+- Assinaturas
+
+- Usuário que emitiu o documento
+
+- Data e hora de emissão
+
+Exemplo de criação do PDF:
+
+```python
+p = canvas.Canvas(response, pagesize=A4)
+p.drawString(100, 750, "Ordem de Serviço")
+```
+
+# 🔐 11. Autenticação
+
+O sistema utiliza o sistema de autenticação padrão do Django.
+
+Todas as páginas principais são protegidas pelo decorator:
+
+```python
+@login_required
+```
+
+Isso garante que apenas usuários autenticados tenham acesso ao sistema.
+
+# ⚙️ 12. Banco de Dados
+
+O projeto utiliza o banco de dados SQLite, padrão do Django.
+
+Ele é suficiente para aplicações pequenas ou para desenvolvimento.
+
+Para ambientes de produção recomenda-se:
+
+- PostgreSQL
+
+- MySQL
+
+# 🚀 13. Execução do Sistema
+
+Passos para executar o projeto:
+
+Clonar repositório
+
+```python
+git clone https://github.com/Gr-1n/sistema-assistencia.git
+```
+
+Criar ambiente virtual
+
+```python
+python -m venv venv
+```
+
+Ativar ambiente
+
+- Windows:
+
+```python
+venv\Scripts\activate
+```
+
+- Linux/Mac:
+
+```python
+source venv/bin/activate
+```
+
+Instalar dependências
+
+```python
+pip install -r requirements.txt
+```
+
+Aplicar migrações
+
+```python
+python manage.py migrate
+```
+
+Criar superusuário
+
+```python
+python manage.py createsuperuser
+```
+
+Executar servidor
+
+```python
+python manage.py runserver
+```
+
+# 📈 14. Possíveis Melhorias
+
+O sistema pode ser expandido com diversas melhorias:
+
+- API REST com Django Rest Framework
+
+- Upload de fotos do equipamento
+
+- Cadastro de técnicos
+
+- Histórico de manutenção
+
+- Notificações por email
+
+- Busca avançada
+
+- Relatórios
+
+- Dashboard com gráficos
+
+# 👨‍💻 15. Autor
+
+Projeto desenvolvido por:
+
+**Lucas Tavares Sgrinier**
+
+GitHub:
+https://github.com/Gr-1n
