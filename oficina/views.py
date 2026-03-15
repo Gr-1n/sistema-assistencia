@@ -248,8 +248,9 @@ from django.http import HttpResponse
 from .models import OrdemServico
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
-
+from django.utils import timezone
 from django.conf import settings
+
 import os
 
 @login_required
@@ -270,8 +271,8 @@ def pdf_ordem(request, id):
 
     # DADOS DA EMPRESA
     p.setFont("Helvetica", 11)
-    p.drawCentredString(largura/2, altura - 4*cm, "Assistência Técnica")
-    p.drawCentredString(largura/2, altura - 4.6*cm, "Telefone: (00) 0000-0000")
+    p.drawCentredString(largura/2, altura - 4*cm, "Assistência Técnica P.I")
+    p.drawCentredString(largura/2, altura - 4.6*cm, "Telefone: (11) 99999-9999")
 
     # LINHA
     p.line(2*cm, altura - 5.5*cm, largura - 2*cm, altura - 5.5*cm)
@@ -323,9 +324,24 @@ def pdf_ordem(request, id):
     p.line(11*cm, y, 17*cm, y)
     p.drawCentredString(14*cm, y - 0.6*cm, "Responsável Técnico")
 
+    # DATA E USUÁRIO
+    data_geracao = timezone.localtime(timezone.now()).strftime("%d/%m/%Y %H:%M")
+    usuario = request.user.username
+
     # RODAPÉ
-    p.setFont("Helvetica", 9)
-    p.drawCentredString(largura/2, 2*cm, "Documento gerado pelo Sistema de Assistência Técnica")
+    p.setFont("Helvetica", 8)
+
+    p.drawCentredString(
+        largura/2,
+        2*cm,
+        f"Sistema de Assistência Técnica | OS Nº {ordem.id}"
+    )
+
+    p.drawCentredString(
+        largura/2,
+        1.6*cm,
+        f"Emitido por: {usuario} | {data_geracao}"
+    )
 
     p.showPage()
     p.save()
