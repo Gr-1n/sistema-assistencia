@@ -271,7 +271,7 @@ def pdf_ordem(request, id):
 
     # DADOS DA EMPRESA
     p.setFont("Helvetica", 11)
-    p.drawCentredString(largura/2, altura - 4*cm, "Assistência Técnica P.I")
+    p.drawCentredString(largura/2, altura - 4*cm, "VALAB Informática")
     p.drawCentredString(largura/2, altura - 4.6*cm, "Telefone: (11) 99999-9999")
 
     # LINHA
