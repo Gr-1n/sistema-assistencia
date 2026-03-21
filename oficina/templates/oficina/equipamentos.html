@@ -20,50 +20,41 @@ Voltar
 
 </div>
 
-<table class="table table-striped">
-
-<tr>
-
-<th>Cliente</th>
-<th>Tipo</th>
-<th>Marca</th>
-<th>Modelo</th>
-<th>Número de Série</th>
-<th>Ações</th>
-</tr>
-
-{% for equipamento in equipamentos %}
-
-<tr>
-
-<td>{{ equipamento.cliente.nome }}</td>
-<td>{{ equipamento.tipo }}</td>
-<td>{{ equipamento.marca }}</td>
-<td>{{ equipamento.modelo }}</td>
-<td>{{ equipamento.numero_serie }}</td>
-
-<td>
-
-<a href="{% url 'editar_equipamento' equipamento.id %}" class="btn btn-sm btn-primary">
-Editar
-</a>
-
-<a href="{% url 'excluir_equipamento' equipamento.id %}"
-class="btn btn-sm btn-danger"
-onclick="return confirm('Deseja excluir este equipamento?')">
-Excluir
-</a>
-
-<a href="{% url 'nova_ordem' %}?equipamento_id={{ eq.id }}" class="btn btn-sm btn-outline-primary">
-    Abrir O.S.
-</a>
-
-</td>
-
-</tr>
-
-{% endfor %}
-
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Série</th>
+            <th class="text-center">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipamento in equipamentos %}
+        <tr>
+            <td>{{ equipamento.cliente.nome }}</td>
+            <td>{{ equipamento.tipo }}</td>
+            <td>{{ equipamento.marca }}</td>
+            <td>{{ equipamento.modelo }}</td>
+            <td>{{ equipamento.numero_serie }}</td>
+            <td class="text-center">
+                <div class="d-flex justify-content-center gap-1">
+                    <a href="{% url 'editar_equipamento' equipamento.id %}" class="btn btn-sm btn-primary">Editar</a>
+                    
+                    <a href="{% url 'excluir_equipamento' equipamento.id %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Deseja excluir este equipamento?')">Excluir</a>
+                    
+                    <a href="{% url 'nova_ordem' %}?equipamento_id={{ equipamento.id }}" class="btn btn-sm btn-outline-primary">
+                        Abrir O.S.
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}

@@ -12,12 +12,12 @@
     <div class="col-md-10 col-lg-8">
         <form action="{% url 'dashboard' %}" method="GET" class="input-group shadow-sm">
             <select name="filtro" class="form-select flex-grow-0" style="width: 160px; font-weight: 500;">
-                <option value="cliente">👤 Cliente</option>
-                <option value="serie">🔢 Nº de Série</option>
-                <option value="id">📄 N° da O.S.</option>
-            </select>
-            
-            <input type="text" name="busca" class="form-control" placeholder="Digite sua pesquisa aqui..." required>
+            <option value="cliente" {% if filtro_selecionado == 'cliente' %}selected{% endif %}>👤 Cliente</option>
+            <option value="serie" {% if filtro_selecionado == 'serie' %}selected{% endif %}>🔢 Nº de Série</option>
+            <option value="id" {% if filtro_selecionado == 'id' %}selected{% endif %}>📄 N° da O.S.</option>
+        </select>
+
+        <input type="text" name="busca" class="form-control" value="{{ request.GET.busca|default:'' }}" placeholder="Pesquisar...">
             
             <button class="btn btn-primary px-4" type="submit">
                 Pesquisar
