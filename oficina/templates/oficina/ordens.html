@@ -23,27 +23,41 @@ Voltar
 <table class="table table-hover align-middle">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Equipamento</th>
-            <th>Problema</th>
-            <th>Diagnóstico</th>
-            <th>Valor</th>
-            <th class="text-center">Status</th>
-            <th class="text-center">Ações</th> 
+            <th class="text-center" style="width: 60px;">ID</th>
+            <th class="text-center" style="width: 100px;">Cliente</th>
+            <th class="text-center" style="width: 120px;">Equipamento</th>
+            <th class="text-center" style="width: 180px;">Problema</th>
+            <th class="text-center" style="width: 120px;">Diagnostico</th>
+            <th class="text-center" style="width: 120px;">Valor</th>
+            <th class="text-center" style="width: 180px;">Status</th>
+            <th class="text-center" style="width: 280px;">Ações</th> 
         </tr>
     </thead>
     <tbody>
         {% for ordem in ordens %}
         <tr>
-            <td>{{ ordem.id }}</td>
-            <td>{{ ordem.cliente.nome }}</td>
-            <td>{{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }}</td>
-            <td>{{ ordem.problema }}</td>
-            <td>{{ ordem.diagnostico }}</td>
-            <td>R$ {{ ordem.valor }}</td>
+            <td class="text-center">{{ ordem.id }}</td>
+            
+            <td class="text-center">{{ ordem.cliente.nome }}</td>
+            <td class="text-center">{{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }}</td>
+            
+            <td class="text-center" title="{{ ordem.problema }}">
+                <span class="text-truncate-custom d-inline-block" style="max-width: 150px;">
+                    {{ ordem.problema }}
+                </span>
+            </td>
+            
+            <td title="{{ ordem.diagnostico }}">
+                <span class="text-truncate-custom" style="max-width: 200px;">
+                    {{ ordem.diagnostico }}
+                </span>
+            </td>
 
-            <td style="width: 180px;">
+            <td class="text-center" style="white-space: nowrap;">
+                <strong class="text-success">R$ {{ ordem.valor|floatformat:2 }}</strong>
+            </td>
+
+            <td class="text-center">
                 <select class="form-select status-select-custom" data-id="{{ ordem.id }}">
                     <option value="recebido" {% if ordem.status == "recebido" %}selected{% endif %}>RECEBIDO</option>
                     <option value="diagnostico" {% if ordem.status == "diagnostico" %}selected{% endif %}>DIAGNÓSTICO</option>

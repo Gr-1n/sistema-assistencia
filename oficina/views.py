@@ -3,6 +3,7 @@ from .models import Cliente, Equipamento, OrdemServico
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
+from reportlab.platypus import Table, TableStyle
 
 @login_required
 def dashboard(request):
@@ -51,10 +52,7 @@ def dashboard(request):
 
     # Se não houver busca, renderiza o dashboard normal
     return render(request, 'oficina/dashboard.html', context)
-    
-    # --- Fim da Lógica de Busca ---
 
-    # Seu código original de contagem dos cards continua aqui abaixo...
     context = {
         "total_os": OrdemServico.objects.count(),
         "total_clientes": Cliente.objects.count(),
@@ -140,24 +138,30 @@ def ordens(request):
 
 @login_required
 def editar_ordem(request, id):
-
     ordem = get_object_or_404(OrdemServico, id=id)
-
     clientes = Cliente.objects.all()
     equipamentos = Equipamento.objects.all()
 
     if request.method == "POST":
-
         ordem.cliente_id = request.POST.get("cliente")
         ordem.equipamento_id = request.POST.get("equipamento")
         ordem.problema = request.POST.get("problema")
         ordem.diagnostico = request.POST.get("diagnostico")
         ordem.valor = request.POST.get("valor")
-        ordem.status = request.POST.get("status")
+        valor_raw = request.POST.get("valor")
 
+        # TRATAMENTO: Troca vírgula por ponto para o banco aceitar
+        if valor_raw:
+            valor_convertido = valor_raw.replace(',', '.')
+            ordem.valor = valor_convertido
+        
+        # O problema deve estar aqui. Garanta que o nome seja 'status'
+        status_novo = request.POST.get("status")
+        if status_novo:
+            ordem.status = status_novo
+            
         ordem.save()
-
-        return redirect("/ordens/")
+        return redirect('ordens')
 
     return render(request, "oficina/editar_ordem.html", {
         "ordem": ordem,
@@ -295,94 +299,97 @@ import os
 
 @login_required
 def pdf_ordem(request, id):
-
+    from reportlab.platypus import Table, TableStyle, Paragraph
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib import colors
+    
     ordem = OrdemServico.objects.get(id=id)
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="ordem_{ordem.id}.pdf"'
 
     p = canvas.Canvas(response, pagesize=A4)
-
     largura, altura = A4
 
-    # TÍTULO
+    # TÍTULO E CABEÇALHO
     p.setFont("Helvetica-Bold", 20)
-    p.drawCentredString(largura/2, altura - 3*cm, "ORDEM DE SERVIÇO")
+    p.drawCentredString(largura/2, altura - 3*cm, "ORDEM DE SERVIÇO"),
 
-    # DADOS DA EMPRESA
     p.setFont("Helvetica", 11)
-    p.drawCentredString(largura/2, altura - 4*cm, "VALAB Informática")
-    p.drawCentredString(largura/2, altura - 4.6*cm, "Telefone: (11) 99999-9999")
+    p.drawCentredString(largura/2, altura - 4*cm, "VALAB Informática"),
+    p.drawCentredString(largura/2, altura - 4.6*cm, "Telefone: (11) 99999-9999"),
 
-    # LINHA
     p.line(2*cm, altura - 5.5*cm, largura - 2*cm, altura - 5.5*cm)
 
     y = altura - 7*cm
-
-    # NÚMERO DA ORDEM
     p.setFont("Helvetica-Bold", 13)
-    p.drawString(3*cm, y, f"Ordem Nº: {ordem.id}")
+    p.drawString(3*cm, y, f"Ordem Nº: {ordem.id}"),
 
-    y -= 1.5*cm
+    # --- CONFIGURAÇÃO DA TABELA DINÂMICA ---
+    
+    # 1. Formatação do Valor para Padrão BRL
+    valor_br = f"R$ {ordem.valor:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
 
-    # TABELA DE DADOS
-    dados = [
-        ["Cliente", ordem.cliente],
-        ["Equipamento", str(ordem.equipamento)],
-        ["Problema", ordem.problema],
-        ["Diagnóstico", ordem.diagnostico],
-        ["Status", ordem.status],
+    # 2. Estilos de Texto para permitir quebra de linha (Paragraph)
+    styles = getSampleStyleSheet()
+    style_texto = styles["Normal"]
+    style_texto.fontSize = 11
+    style_texto.leading = 14  # Espaçamento entre linhas
+
+    # 3. Montagem dos Dados (Usando Paragraph nas colunas de texto longo)
+    dados_tabela = [
+        [Paragraph("<b>Cliente:</b>", style_texto), Paragraph(str(ordem.cliente.nome), style_texto)],
+        [Paragraph("<b>Equipamento:</b>", style_texto), Paragraph(str(ordem.equipamento), style_texto)],
+        [Paragraph("<b>Problema:</b>", style_texto), Paragraph(str(ordem.problema), style_texto)],
+        [Paragraph("<b>Diagnóstico:</b>", style_texto), Paragraph(str(ordem.diagnostico), style_texto)],
+        [Paragraph("<b>Status:</b>", style_texto), Paragraph(str(ordem.get_status_display()).upper(), style_texto)],
+        [Paragraph("<b>Valor Total:</b>", style_texto), Paragraph(str(valor_br), style_texto)]
     ]
 
-    largura_label = 5*cm
-    largura_valor = 11*cm
+    # 4. Criação da Tabela com larguras fixas (4cm rótulo, 13cm conteúdo)
+    tabela = Table(dados_tabela, colWidths=[4*cm, 13*cm])
 
-    for label, valor in dados:
+    # 5. Estilização da Tabela com Moldura (GRID)
+    tabela.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),          # Texto alinhado no topo da célula
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('TEXTCOLOR', (0, 5), (1, 5), colors.darkgreen),
+        ('FONTSIZE', (0, 5), (1, 5), 13),
+    ]))
 
-        p.setFont("Helvetica-Bold", 11)
-        p.drawString(3*cm, y, label + ":")
+    # 6. Cálculo e Desenho da Tabela
+    tabela.wrapOn(p, largura, altura)
+    altura_tabela = tabela._height  # Mede a altura que a tabela ocupou com os textos longos
+    
+    # Desenha a tabela. O 'y' é ajustado pela altura calculada
+    tabela.drawOn(p, 2.5*cm, y - altura_tabela - 0.5*cm)
 
-        p.setFont("Helvetica", 11)
-        p.drawString(8*cm, y, str(valor))
+    # 7. ASSINATURAS (Posicionadas dinamicamente abaixo da tabela)
+    y_assinaturas = y - altura_tabela - 4*cm # Espaço após a tabela
 
-        y -= 1*cm
+    # Cálculo para centralizar os blocos na página
+    # Dividimos a largura em duas colunas imaginárias
+    coluna_1 = largura / 4
+    coluna_2 = (largura / 4) * 3
 
-    # VALOR
-    y -= 0.5*cm
+    # Bloco Assinatura do Cliente (Esquerda)
+    p.line(coluna_1 - 3*cm, y_assinaturas, coluna_1 + 3*cm, y_assinaturas)
+    p.drawCentredString(coluna_1, y_assinaturas - 0.6*cm, "Assinatura do Cliente")
 
-    p.setFont("Helvetica-Bold", 14)
-    p.setFillColor(colors.darkgreen)
-    p.drawString(3*cm, y, f"Valor do Serviço: R$ {ordem.valor}")
-    p.setFillColor(colors.black)
+    # Bloco Responsável Técnico (Direita)
+    p.line(coluna_2 - 3*cm, y_assinaturas, coluna_2 + 3*cm, y_assinaturas)
+    p.drawCentredString(coluna_2, y_assinaturas - 0.6*cm, "Responsável Técnico")
 
-    # ASSINATURAS
-    y -= 3*cm
-
-    p.line(3*cm, y, 9*cm, y)
-    p.drawCentredString(6*cm, y - 0.6*cm, "Assinatura do Cliente")
-
-    p.line(11*cm, y, 17*cm, y)
-    p.drawCentredString(14*cm, y - 0.6*cm, "Responsável Técnico")
-
-    # DATA E USUÁRIO
+    # 8. RODAPÉ
     data_geracao = timezone.localtime(timezone.now()).strftime("%d/%m/%Y %H:%M")
     usuario = request.user.username
 
-    # RODAPÉ
     p.setFont("Helvetica", 8)
-
-    p.drawCentredString(
-        largura/2,
-        2*cm,
-        f"Sistema de Assistência Técnica | OS Nº {ordem.id}"
-    )
-
-    p.drawCentredString(
-        largura/2,
-        1.6*cm,
-        f"Emitido por: {usuario} | {data_geracao}"
-    )
-
+    p.drawCentredString(largura/2, 2*cm, f"Sistema de Assistência Técnica | OS Nº {ordem.id}"),
+    p.drawCentredString(largura/2, 1.6*cm, f"Emitido por: {usuario} | {data_geracao}"),
     p.showPage()
     p.save()
 

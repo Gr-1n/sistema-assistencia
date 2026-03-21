@@ -97,6 +97,40 @@
         color: #0f5132 !important;
     }
 
+    /* Limita o texto e adiciona reticências */
+    .text-truncate-custom {
+        max-width: 250px; /* Você pode ajustar essa largura */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        vertical-align: middle;
+        cursor: help; /* Muda o mouse para indicar que há mais texto */
+    }
+
+    .table td, .table th {
+        vertical-align: middle !important;
+        text-align: left; /* Padrão à esquerda para textos */
+    }
+
+    /* Centraliza colunas específicas */
+    .text-center-column {
+        text-align: center !important;
+    }
+
+    /* Ajuste fino para a coluna de valor */
+    .col-valor {
+        width: 120px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #198754; /* Cor verde que você está usando */
+    }
+
+    /* Largura fixa para o Status não empurrar a tabela */
+    .col-status {
+        width: 180px;
+    }
+
 </style>
     
 </head>

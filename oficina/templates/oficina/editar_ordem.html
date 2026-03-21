@@ -32,8 +32,19 @@
 <label>Diagnóstico</label>
 <textarea name="diagnostico" class="form-control">{{ ordem.diagnostico }}</textarea>
 
-<label>Valor</label>
-<input type="text" name="valor" class="form-control" value="{{ ordem.valor }}">
+<label>Valor (R$):</label>
+<input type="text" name="valor" class="form-control" 
+       value="{{ ordem.valor|floatformat:2 }}" 
+       placeholder="0,00">
+
+<label>Status:</label>
+<select name="status" class="form-select"> <option value="recebido" {% if ordem.status == 'recebido' %}selected{% endif %}>Recebido</option>
+    <option value="diagnostico" {% if ordem.status == 'diagnostico' %}selected{% endif %}>Em Diagnóstico</option>
+    <option value="aprovacao" {% if ordem.status == 'aprovacao' %}selected{% endif %}>Aguardando Aprovação</option>
+    <option value="reparo" {% if ordem.status == 'reparo' %}selected{% endif %}>Em Reparo</option>
+    <option value="finalizado" {% if ordem.status == 'finalizado' %}selected{% endif %}>Finalizado</option>
+    <option value="cancelado" {% if ordem.status == 'cancelado' %}selected{% endif %}>Cancelado</option>
+</select>
 
 <br>
 
