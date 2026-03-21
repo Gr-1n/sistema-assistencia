@@ -1,28 +1,60 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from .models import Cliente, Equipamento, OrdemServico
 from django.contrib.auth.decorators import login_required
-
+from django.contrib import messages
+from django.db.models import Q
 
 @login_required
 def dashboard(request):
+    # --- Início da Lógica de Busca ---
+    busca = request.GET.get('busca')
+    filtro = request.GET.get('filtro')
 
-    total_os = OrdemServico.objects.count()
-    total_clientes = Cliente.objects.count()
+    if busca:
+        # Começamos com todas as ordens
+        ordens = OrdemServico.objects.all()
+        
+        if filtro == 'cliente':
+            # Busca pelo nome do cliente (campo 'nome' no model Cliente)
+            ordens = ordens.filter(cliente__nome__icontains=busca)
+            
+        elif filtro == 'serie':
+            # Buscamos diretamente na tabela de Equipamentos
+            equipamentos = Equipamento.objects.filter(numero_serie__icontains=busca)
+            
+            if not equipamentos.exists():
+                messages.error(request, f'Nenhum equipamento encontrado com a série "{busca}".')
+                return redirect('dashboard')
+            
+            # Redireciona para a lista de equipamentos passando a busca na URL
+            return render(request, 'oficina/equipamentos.html', {'equipamentos': equipamentos})
+            
+        elif filtro == 'id':
+            # Busca exata pelo ID da Ordem de Serviço
+            if busca.isdigit():
+                ordens = ordens.filter(id=busca)
+            else:
+                ordens = OrdemServico.objects.none()
 
-    recebidos = OrdemServico.objects.filter(status="recebido").count()
-    diagnostico = OrdemServico.objects.filter(status="diagnostico").count()
-    aprovacao = OrdemServico.objects.filter(status="aprovacao").count()
-    reparo = OrdemServico.objects.filter(status="reparo").count()
-    finalizados = OrdemServico.objects.filter(status="finalizado").count()
+        # Validação: Se a lista estiver vazia após o filtro
+        if not ordens.exists():
+            messages.error(request, f'Nenhuma O.S. encontrada para "{busca}" no filtro {filtro}.')
+            return redirect('dashboard')
+        
+        # Se encontrou, leva para a tela de listagem de ordens
+        return render(request, 'oficina/ordens.html', {'ordens': ordens})
+    
+    # --- Fim da Lógica de Busca ---
 
+    # Seu código original de contagem dos cards continua aqui abaixo...
     context = {
-        "total_os": total_os,
-        "total_clientes": total_clientes,
-        "recebidos": recebidos,
-        "diagnostico": diagnostico,
-        "aprovacao": aprovacao,
-        "reparo": reparo,
-        "finalizados": finalizados
+        "total_os": OrdemServico.objects.count(),
+        "total_clientes": Cliente.objects.count(),
+        "recebidos": OrdemServico.objects.filter(status="recebido").count(),
+        "diagnostico": OrdemServico.objects.filter(status="diagnostico").count(),
+        "aprovacao": OrdemServico.objects.filter(status="aprovacao").count(),
+        "reparo": OrdemServico.objects.filter(status="reparo").count(),
+        "finalizados": OrdemServico.objects.filter(status="finalizado").count()
     }
 
     return render(request, 'oficina/dashboard.html', context)
@@ -362,3 +394,33 @@ def atualizar_status(request, id):
         ordem.save()
 
         return JsonResponse({"success": True})
+    
+from django.db.models import Q
+
+def lista_ordens(request):
+    ordens = Ordem.objects.all()
+    
+    # Captura os dados da busca
+    busca = request.GET.get('busca')
+    filtro = request.GET.get('filtro')
+
+    if busca:
+        if filtro == 'Nome':
+            ordens = ordens.filter(cliente__nome__icontains=busca)
+        elif filtro == 'Número de Série':
+            ordens = ordens.filter(equipamento__serie__icontains=busca)
+        elif filtro == 'ID':
+            ordens = ordens.filter(id__exact=busca)
+
+    return render(request, 'oficina/ordens.html', {'ordens': ordens})
+
+@login_required
+def lista_equipamentos(request):
+    equipamentos = Equipamento.objects.all()
+    
+    # Captura a busca se ela vier do Dashboard ou de um campo na própria página
+    busca = request.GET.get('busca')
+    if busca:
+        equipamentos = equipamentos.filter(numero_serie__icontains=busca)
+        
+    return render(request, 'oficina/equipamentos.html', {'equipamentos': equipamentos})

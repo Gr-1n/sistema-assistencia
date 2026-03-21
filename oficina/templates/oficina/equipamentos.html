@@ -54,6 +54,10 @@ onclick="return confirm('Deseja excluir este equipamento?')">
 Excluir
 </a>
 
+<a href="{% url 'nova_ordem' %}?equipamento_id={{ eq.id }}" class="btn btn-sm btn-outline-primary">
+    Abrir O.S.
+</a>
+
 </td>
 
 </tr>
