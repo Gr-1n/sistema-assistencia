@@ -21,80 +21,65 @@ Voltar
 </div>
 
 <table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Equipamento</th>
+            <th>Problema</th>
+            <th>Diagnóstico</th>
+            <th>Valor</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Ações</th> 
+        </tr>
+    </thead>
+    <tbody>
+        {% for ordem in ordens %}
+        <tr>
+            <td>{{ ordem.id }}</td>
+            <td>{{ ordem.cliente.nome }}</td>
+            <td>{{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }}</td>
+            <td>{{ ordem.problema }}</td>
+            <td>{{ ordem.diagnostico }}</td>
+            <td>R$ {{ ordem.valor }}</td>
 
-<thead>
+            <td style="width: 180px;">
+                <select class="form-select status-select-custom" data-id="{{ ordem.id }}">
+                    <option value="recebido" {% if ordem.status == "recebido" %}selected{% endif %}>RECEBIDO</option>
+                    <option value="diagnostico" {% if ordem.status == "diagnostico" %}selected{% endif %}>DIAGNÓSTICO</option>
+                    <option value="aprovacao" {% if ordem.status == "aprovacao" %}selected{% endif %}>APROVAÇÃO</option>
+                    <option value="reparo" {% if ordem.status == "reparo" %}selected{% endif %}>REPARO</option>
+                    <option value="finalizado" {% if ordem.status == "finalizado" %}selected{% endif %}>FINALIZADO</option>
+                    <option value="cancelado" {% if ordem.status == "cancelado" %}selected{% endif %}>CANCELADO</option>
+                </select>
+            </td>
 
-<tr>
-<th>ID</th>
-<th>Cliente</th>
-<th>Equipamento</th>
-<th>Problema</th>
-<th>Diagnóstico</th>
-<th>Valor</th>
-<th class="text-center">Status</th>
-<th class="text-center">Ações</th> </tr>
-</tr>
+            <td class="text-center">
+                <div class="d-flex justify-content-center gap-1">
+                    <a href="{% url 'editar_ordem' ordem.id %}" class="btn btn-primary btn-sm">
+                        Editar
+                    </a>
 
-</thead>
+                    <a href="{% url 'finalizar_ordem' ordem.id %}" 
+                       class="btn btn-success btn-sm"
+                       onclick="return confirm('Tem certeza que deseja finalizar esta ordem?');">
+                        Finalizar
+                    </a>
 
-<tbody>
+                    <a href="{% url 'cancelar_ordem' ordem.id %}" 
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Tem certeza que deseja cancelar esta ordem?');">
+                        Cancelar
+                    </a>
 
-{% for ordem in ordens %}
-
-<tr>
-
-<td>{{ ordem.id }}</td>
-<td>{{ ordem.cliente.nome }}</td>
-<td>{{ ordem.equipamento.marca }} {{ ordem.equipamento.modelo }}</td>
-<td>{{ ordem.problema }}</td>
-<td>{{ ordem.diagnostico }}</td>
-<td>R$ {{ ordem.valor }}</td>
-
-<td style="width: 180px;">
-    <select class="form-select status-select-custom" data-id="{{ ordem.id }}">
-        <option value="recebido" {% if ordem.status == "recebido" %}selected{% endif %}>RECEBIDO</option>
-        <option value="diagnostico" {% if ordem.status == "diagnostico" %}selected{% endif %}>DIAGNÓSTICO</option>
-        <option value="aprovacao" {% if ordem.status == "aprovacao" %}selected{% endif %}>APROVAÇÃO</option>
-        <option value="reparo" {% if ordem.status == "reparo" %}selected{% endif %}>REPARO</option>
-        <option value="finalizado" {% if ordem.status == "finalizado" %}selected{% endif %}>FINALIZADO</option>
-        <option value="cancelado" {% if ordem.status == "cancelado" %}selected{% endif %}>CANCELADO</option>
-    </select>
-</td>
-
-<td class="text-center">
-
-</td>
-
-<td>
-
-<a href="{% url 'editar_ordem' ordem.id %}" class="btn btn-primary btn-sm">
-Editar
-</a>
-
-<a href="{% url 'finalizar_ordem' ordem.id %}" 
-class="btn btn-success btn-sm"
-onclick="return confirm('Tem certeza que deseja finalizar esta ordem?');">
-Finalizar
-</a>
-
-<a href="{% url 'cancelar_ordem' ordem.id %}" 
-class="btn btn-danger btn-sm"
-onclick="return confirm('Tem certeza que deseja cancelar esta ordem?');">
-Cancelar
-</a>
-
-<a href="{% url 'pdf_ordem' ordem.id %}" class="btn btn-secondary btn-sm">
-    PDF
-</a>
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
+                    <a href="{% url 'pdf_ordem' ordem.id %}" class="btn btn-secondary btn-sm">
+                        PDF
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 <script>
