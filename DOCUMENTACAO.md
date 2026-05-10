@@ -39,44 +39,62 @@ Responsável pela interface visual do sistema.
 
 ---
 
-# 📂 3. Estrutura do Projeto
+# 📁 Estrutura do Projeto
 
-
-sistema-assistencia
-│
-├── assistencia_tecnica
-│ ├── init.py
-│ ├── asgi.py
-│ ├── settings.py
-│ ├── urls.py
-│ └── wsgi.py
-│
-├── oficina
-│ ├── migrations
-│ ├── templates
-│ │ └── oficina
-│ │ ├── dashboard.html
-│ │ ├── clientes.html
-│ │ ├── equipamentos.html
-│ │ ├── ordens.html
-│ │ ├── novo_cliente.html
-│ │ ├── novo_equipamento.html
-│ │ └── nova_ordem.html
-│ │
-│ ├── admin.py
-│ ├── apps.py
-│ ├── models.py
-│ ├── views.py
-│ ├── urls.py
-│ └── tests.py
-│
-├── static
-│
-├── manage.py
-└── requirements.txt
-
-
----
+```bash
+📦 sistema-assistencia
+┣ 📂 assistencia_tecnica
+┃ ┣ 📜 __init__.py
+┃ ┣ 📜 asgi.py
+┃ ┣ 📜 settings.py
+┃ ┣ 📜 urls.py
+┃ ┗ 📜 wsgi.py
+┃
+┣ 📂 oficina
+┃ ┣ 📂 migrations
+┃ ┃ ┣ 📜 __init__.py
+┃ ┃ ┗ 📂 ...
+┃ ┃
+┃ ┣ 📂 templates
+┃ ┃ ┗ 📂 oficina
+┃ ┃   ┣ 📄 dashboard.html
+┃ ┃   ┣ 📄 clientes.html
+┃ ┃   ┣ 📄 equipamentos.html
+┃ ┃   ┣ 📄 ordens.html
+┃ ┃   ┣ 📄 novo_cliente.html
+┃ ┃   ┣ 📄 novo_equipamento.html
+┃ ┃   ┗ 📄 nova_ordem.html
+┃ ┃
+┃ ┣ 📂 static
+┃ ┃ ┣ 📂 css
+┃ ┃ ┣ 📂 js
+┃ ┃ ┣ 📂 img
+┃ ┃ ┗ 📂 icons
+┃ ┃
+┃ ┣ 📂 __pycache__
+┃ ┃
+┃ ┣ 📜 __init__.py
+┃ ┣ 📜 admin.py
+┃ ┣ 📜 apps.py
+┃ ┣ 📜 models.py
+┃ ┣ 📜 views.py
+┃ ┣ 📜 urls.py
+┃ ┣ 📜 tests.py
+┃ ┗ 📜 forms.py
+┃
+┣ 📂 venv
+┃ ┣ 📂 Include
+┃ ┣ 📂 Lib
+┃ ┣ 📂 Scripts
+┃ ┗ 📜 pyvenv.cfg
+┃
+┣ 📜 manage.py
+┣ 📜 requirements.txt
+┣ 📜 db.sqlite3
+┣ 📜 README.md
+┣ 📜 .gitignore
+┗ 📜 LICENSE
+```
 
 # 🧱 4. Modelagem de Dados
 
